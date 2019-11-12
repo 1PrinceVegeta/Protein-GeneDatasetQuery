@@ -1,4 +1,3 @@
-#  query 1
 import re
 from os import listdir
 from datetime import datetime
