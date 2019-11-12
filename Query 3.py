@@ -1,4 +1,3 @@
-#  query 3
 import re
 from datetime import datetime
 
