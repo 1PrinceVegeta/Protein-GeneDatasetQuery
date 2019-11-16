@@ -47,15 +47,16 @@ def print_result(uniprot_id1, gene_id1):
                 for line1 in function:
                     global result1
                     result1 += line1.strip("\n\t").replace("       ", " ")
-        print("\nFunction : " + result1[11:])
+        result2 = re.compile('(\\s*)FUNCTION:(\\s*)')
+        print("\nFunction : " + result2.sub('', result1))
         print("\nSequence : ", end="")
         gene_details1 = gene2.split("\n")
         sequence = ""
         for line in gene_details1:
             if re.match(r'\s', line):
                 sequence += str(line)
-        result2 = sequence.split("    ")
-        for line in result2:
+        result3 = sequence.split("    ")
+        for line in result3:
             if line.strip():
                 print(line, end="")
     else:
