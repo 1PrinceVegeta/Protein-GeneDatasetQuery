@@ -3,20 +3,21 @@ from os import listdir
 from datetime import datetime
 
 
-def query_file(path, organism, gene_id):
+def query_file(path, filename, gene_id):
     interactors_list = []
-    with open(path + "//" + organism, 'r') as currentFile:
+    with open(path + "\\" + filename, 'r') as currentFile:
         for line in currentFile:
+            interactor = line.split("\t")
             if gene_id in line:
-                interactor = line.split("\t")
-                if gene_id.isdigit():
-                    if re.search(':(.*)', interactor[0]).group(1) == gene_id:
-                        # interactors_list.append(interactor[1].partition(":")[2].partition(" ")[0])  # using partition
-                        interactors_list.append(re.search(':(.*)', interactor[1]).group(1))  # using regex
-                else:
-                    if re.search(r'locuslink:([^|]*)', interactor[2]).group(1) == gene_id:
-                        # interactors_list.append(interactor[3].partition("locuslink:")[2].partition("|")[0]) # using partition
-                        interactors_list.append(re.search(r'locuslink:([^|]*)', interactor[3]).group(1))  # using regex
+                print(interactor[1])
+                # if gene_id.isdigit():
+                #     if re.search(':(.*)', interactor[0]).group(1) == gene_id:
+                #         # interactors_list.append(interactor[1].partition(":")[2].partition(" ")[0])  # using partition
+                #         interactors_list.append(re.search(':(.*)', interactor[1]).group(1))  # using regex
+                # else:
+                #     if re.search(r'locuslink:([^|]*)', interactor[2]).group(1) == gene_id:
+                #         # interactors_list.append(interactor[3].partition("locuslink:")[2].partition("|")[0]) # using partition
+                #         interactors_list.append(re.search(r'locuslink:([^|]*)', interactor[3]).group(1))  # using regex
     return interactors_list
 
 
@@ -34,10 +35,10 @@ def print_result(interactors_list):
 
 
 if __name__ == '__main__':
-    path = input("Enter Path to Biogrid Dataset: ")
-    organism = input("Enter name of Organism: ")
-    gene = input("Enter Gene Name/ID: ")
+    path = input("Enter Dataset Path:  ")
+    filename = input("Enter Organism file to search: ")
+    gene = input("Enter Gene Name/ID: ");
     x = datetime.now()
-    interactors = query_file(path, organism, gene)
+    interactors = query_file(path, filename, gene)
     y = datetime.now()
     print_result(interactors)
