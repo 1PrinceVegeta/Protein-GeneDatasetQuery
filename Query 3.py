@@ -48,7 +48,7 @@ def print_result(uniprot_id1, gene_id1):
                     global result1
                     result1 += line1.strip("\n\t").replace("       ", " ")
         result2 = re.compile('(\\s*)FUNCTION:(\\s*)')
-        print("\nFunction : " + result2.sub('', result1))
+        print("\nFunction :" + result2.sub(' ', result1))
         print("\nSequence : ", end="")
         gene_details1 = gene2.split("\n")
         sequence = ""
