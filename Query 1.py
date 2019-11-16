@@ -3,40 +3,49 @@ from os import listdir
 from datetime import datetime
 
 
-def query_file(gene_id):
-    interactors_list = []
-    for filename in listdir("E:\\CSE 3113Y Assignment\\BIOGRID-ORGANISM-3.5.177.mitab"):
-        with open("E:\\CSE 3113Y Assignment\\BIOGRID-ORGANISM-3.5.177.mitab\\" + filename, 'r') as currentFile:
-            for line in currentFile:
-                if gene_id in line:
-                    interactor = line.split("\t")
-                    if gene_id.isdigit():
-                        if re.search(':(.*)', interactor[0]).group(1) == gene_id:
-                            # interactors_list.append(interactor[1].partition(":")[2].partition(" ")[0])  # using partition
-                            interactors_list.append(re.search(':(.*)', interactor[1]).group(1))  # using regex
-                    else:
-                        if re.search(r'locuslink:([^|]*)', interactor[2]).group(1) == gene_id:
-                            # interactors_list.append(interactor[3].partition("locuslink:")[2].partition("|")[0]) # using partition
-                            interactors_list.append(re.search(r'locuslink:([^|]*)', interactor[3]).group(1))  # using regex
+def query_file(path, filename, gene_id):
+    interactors_list = {}
+    interactors_id_array_duplicates = []
+    interactors_alias_array_duplicates = []
+    interactors_id_array = []
+    interactors_alias_array = []
+    with open(path + "\\" + filename, 'r') as currentFile:
+        for line in currentFile:
+            interactor = line.split("\t")
+            if gene_id in line:
+                clean_id = interactor[1].replace("entrez gene/locuslink:", "");
+                clean_alias = interactor[5].replace("entrez gene/locuslink:", "").replace("(gene name synonym)", "")
+                interactors_id_array_duplicates.append(clean_id)
+                interactors_alias_array_duplicates.append(clean_alias)
+                for i in interactors_id_array_duplicates: 
+                    if i not in interactors_id_array: 
+                        interactors_id_array.append(i) 
+
+                for i in interactors_alias_array_duplicates: 
+                    if i not in interactors_alias_array: 
+                        interactors_alias_array.append(i)       
+                interactors_list.update({ 'id' : interactors_id_array, 'alias' : interactors_alias_array})
     return interactors_list
 
 
 def print_result(interactors_list):
     if len(interactors_list) > 0:
         print("\nGene Name/ID : " + gene)
-        interactors_list = list(dict.fromkeys(interactors_list))
-        print("Number of interactors : " + str(len(interactors_list)))
-        print("Interactors : ", end="")
-        for interactor in interactors_list:
-            print(interactor, end=" ")
+        print("Number of interactors : " + str(len(interactors_list['id'])))
+        print("Interactors (ID): ", end="")
+        print(interactors_list['id'])
+        print("Interactors (Aliases): ", end="")
+        print(interactors_list['alias'])
     else:
         print("No interactor found for gene!")
     print("\nTime Taken: " + str(y - x))
 
 
 if __name__ == '__main__':
-    gene = input("Enter Gene Name/ID: ")
+    path = input("Enter Dataset Path:  ")
+    filename = input("Enter Organism file to search: ")
+    gene = input("Enter Gene Name/ID: ");
     x = datetime.now()
-    interactors = query_file(gene)
+    interactors = query_file(path, filename, gene)
     y = datetime.now()
     print_result(interactors)
